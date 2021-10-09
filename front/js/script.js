@@ -1,4 +1,4 @@
-// Récup Items data from API
+// Récupération des produits depuis l'API
 
 fetch("http://localhost:3000/api/products")
 .then(function(res) {
@@ -10,10 +10,15 @@ fetch("http://localhost:3000/api/products")
     myLog(items)
 })
 .catch(function(err) {
-   //error
+    console.log("Fetch Failed")
+   alert("Affichage momentanément impossible. Désolé pour le dérangement")
 });
 
 
 function myLog(myItems){
     console.log(myItems)
 }
+
+
+let data = document.getElementById("items");
+data.innertHTML = ""

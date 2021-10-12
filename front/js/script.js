@@ -1,25 +1,26 @@
 // Récupération des produits depuis l'API
 
 fetch("http://localhost:3000/api/products")
-.then(function(res) {
-    if (res.ok) {
-        return res.json();
-    }
+    .then(function(res) {
+        if (res.ok) {
+            return res.json();
+        }
 })
 
-.catch(function(err) {
-    console.log("Fetch Failed")
-    let items = document.querySelector("#items");
-    items.innertHTML = "Affichage momentanément impossible. Veuillez revenir plus tard.";
+    .catch(function(err) {
+        console.log("Fetch Failed")
+        let items = document.querySelector("#items");
+        items.innertHTML = "Affichage momentanément impossible. Veuillez revenir plus tard.";
 })
 
 // Fonction qui va afficher les objets dans le DOM automatiquement
 .then(function(allItems) {
     const items = allItems;
     console.log(items);
-//Boucle pour afficher tous les produits
+
+//Boucle pour afficher chaque article de tous les produits
     for (let article in items) {
-// Créer les éléments et mettre les données
+// Créer les éléments et mettre les données à l'intérieur
         let productLink = document.createElement("a");
         document.querySelector(".items").appendChild(productLink);
         productLink.href = `product.html?id=${allItems[article]._id}`;
@@ -44,9 +45,6 @@ fetch("http://localhost:3000/api/products")
     }
 });
 
-
-
-/*let itemsData = document.getElementById("items");*/
 
 
 

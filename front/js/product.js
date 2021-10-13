@@ -40,7 +40,7 @@ fetch("http://localhost:3000/api/products/" + idItems)
 
      // Affiche le prix de l'article choisi
      let productPrice = document.getElementById('price');
-     productPrice.innerHTML = article.price /100;  // prix affiché en euros
+     productPrice.innerHTML = article.price; 
 
      // Affiche la description de l'article choisi
      let productDescription = document.getElementById('description');
@@ -56,3 +56,40 @@ for (let colors of article.colors){
 };
     })
     
+
+//----------- Gestion du panier ------------------
+
+// Sélection Id des options disponibles pour chaque article
+const colorChoice = document.querySelector("#colors");
+const quantityChoice = document.querySelector("#quantity");
+
+// Choix de la couleur dans une variable
+let userColorChoice = colorChoice.value;
+
+// Choix de la quantité de l'article
+let userQuantityChoice = quantityChoice.value;
+
+// Sélection du bouton Ajouter au panier
+const addToCart = document.querySelector("#addToCart");
+console.log(addToCart);
+
+// Ecouter le bouton et envoie dans le panier
+addToCart.addEventListener("click", (event)=> {
+    event.preventDefault();
+
+
+// Récupération des valeurs sélectionnées
+let itemOptions = {
+    itemID: idItems,
+    productColors: colorChoice.value,
+    nombreItem: Number(quantityChoice.value),
+    productName: article.name,
+    productPrice: article.price,
+    productDescription: article.description,
+    productImg: article.imageUrl,
+    productAltImg: article.altTxt
+
+}
+
+console.log(itemOptions);
+});

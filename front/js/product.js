@@ -27,20 +27,22 @@ fetch("http://localhost:3000/api/products/" + idItems)
 
     })
     .catch((error) => {
-        console.log("Fetch failed");
+        console.log(error, "Fetch failed");
         let items = document.querySelector(".item");
         items.innertHTML = "Produit momentanément indisponible. Veuillez revenir plus tard.";
     });
 
 
+// Création de la fonction d'affichage des données de l'article
 function displayProduct(article) {
+
     // Affichage de l'image de l'article choisi
     let productImg = document.createElement("img");
     document.querySelector(".item__img").appendChild(productImg);
     productImg.src = article.imageUrl;
     productImg.alt = article.altTxt;
 
-    // Nom de l'article choisi
+    // Affichage du nom de l'article choisi
     let productName = document.getElementById('title');
     productName.innerHTML = article.name;
 
@@ -63,40 +65,82 @@ function displayProduct(article) {
 }
 
 
-
 //----------- Gestion du panier ------------------
 
 
-
-// Sélection du bouton Ajouter au panier
-const addToCart = document.querySelector("#addToCart");
+// Sélection du bouton pour ajouter au panier
+const addToCart = document.getElementById("addToCart");
 console.log(addToCart);
 
-// Ecouter le bouton et envoie dans le panier
-addToCart.addEventListener("click", (event) => {
-    event.preventDefault();
-
-    // Sélection Id des options disponibles pour chaque article
-    const colorChoice = document.querySelector("#colors");
-    const quantityChoice = document.querySelector("#quantity");
-
-    // Choix de la couleur dans une variable
-    let userColorChoice = colorChoice.value;
-
-    // Choix de la quantité de l'article
-    let userQuantityChoice = quantityChoice.value;
-
-    // Récupération des valeurs sélectionnées
-    let itemOptions = {
-        itemID: idItems,
-        productColors: colorChoice.value,
-        nombreItem: Number(quantityChoice.value),
+// Fonction de récupération d'un article déclaré dans le storage
+function getCart() {
+    let items = [];
+    if (localStorage.getItem("cart") != null) {
+        items = JSON.parse(localStorage.getItem("cart"));
     }
+    return items;
+}
+//--- JSON.parse pour convertir les données au format JSON 
+//qui sont dans le local storage en objet JavaScript ---
 
-    console.log(itemOptions);
+
+// Choix de la quantité dans une fonction
+function quantityValue() {
+    let quantity = document.getElementById("quantity");
+    return quantity.value;
+}
+
+// Choix de la couleur dans une fonction
+function colorValue() {
+    let color = document.getElementById("colors");
+    return color.value;
+}
+
+//Fenêtre de confirmation des options sélectionnées
+const confirmationWindow = () => {
+    if (window.confirm(`Votre choix de couleur: ${colorValue()} quantité: ${quantityValue()} a bien été ajouté à votre panier. Consultez le panier OK, revenir à l'accueil Annuler`)) {
+        window.location.href = "cart.html";
+    } else {
+        window.location.href = "index.html";
+    }
+}
+
+// Fonction d'ajout au panier selon les options avec regroupement des items
+function itemInCart(productId, color, quantity) {
+    if (quantity == 0) {
+        return;
+    }
+    let items = getCart();
+    if (items.length == 0) {
+        items.push({ "productId": productId, "color": color, "quantity": quantity });
+        confirmationWindow();
+
+    } else {
+        let found = false;
+        for (let i = 0; i < items.length; i++) {
+            if (productId === items[i].productId && color === items[i].color) {
+                found = true;
+                items[i].quantity += quantity;
+                confirmationWindow();
+            }
+        }
+        if (found == false) {
+            let item = {
+                "productId": productId, "color": color, "quantity": quantity
+            };
+            // Ajout dans le tableau de l'objet avec les options choisies
+            items.push(item);
+            confirmationWindow();
+        }
+    }
+    // Transformation au format JSON et envoie vers la key du local storage
+    localStorage.setItem("cart", JSON.stringify(items));
+}
+
+
+// Ecouter le bouton et envoie dans le panier des options choisies
+addToCart.addEventListener("click", () => {
+    let quantity = parseInt(quantityValue());
+    let color = colorValue();
+    itemInCart(idItems, color, quantity);
 });
-
-
-//--------------- Local Storage -----------------
-
-// Stockage de la récupération des valeurs

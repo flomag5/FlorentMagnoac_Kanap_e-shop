@@ -22,14 +22,12 @@ if (cartItem === null || cartItem == 0) {
         console.log(data);
         console.log(items);
         positionItems.innerHTML += displayItem(data, items.color, items.quantity);
-
       })
-
   }
-
 };
-function displayItem(data, color, quantity) {
 
+// Fonction affichage des informations de chaque produit dans le panier
+function displayItem(data, color, quantity) {
   return `
          <article class="cart__item" data-id="${data._Id}">
                  <div class="cart__item__img">
@@ -39,7 +37,7 @@ function displayItem(data, color, quantity) {
                    <div class="cart__item__content__titlePrice">
                      <h2>${data.name}</h2>
                      <p>${color}</p>
-                     <p>${data.price}.00 €</p>
+                     <p>${data.price * quantity}.00 €</p>
                    </div>
                    <div class="cart__item__content__settings">
                      <div class="cart__item__content__settings__quantity">
@@ -52,57 +50,118 @@ function displayItem(data, color, quantity) {
                    </div>
                  </div>
                </article>`;
+
 }
 
 //------- Fin affichage produits panier -------------
+
+// Modification d'une quantité de produit
+function modifyQtt() {
+  let qttModif = document.querySelectorAll(".itemQuantity");
+
+  for (let k = 0; k < qttModif.length; k++) {
+    qttModif[k].addEventListener("change", (event) => {
+      event.preventDefault();
+
+      //Selection de l'element à modifier en fonction de son id ET sa couleur
+      let quantityModif = cartItem[k].items.quantity;
+      let qttModifValue = qttModif[k].valueAsNumber;
+
+      const resultFind = cartItem.find((el) => el.qttModifValue !== quantityModif);
+
+      resultFind.items.quantity = qttModifValue;
+      cartItem[k].items.quantity = resultFind.items.quantity;
+
+      localStorage.setItem("cart", JSON.stringify(cartItem));
+
+      // refresh rapide
+      location.reload();
+    });
+  };
+}
+modifyQtt();
+
+/*
 function getPrices() {
-  let itemQuantity = document.getElementsByClassName("itemQuantity");
-  totalQuantity = 0;
-
-  for (let i = 0; i < itemQuantity.length; i++) {
-    totalQuantity += itemQuantity[i].value;
-  }
-  let itemsTotalQuantity = document.getElementById("totalQuantity");
-  itemsTotalQuantity.innerHTML = totalQuantity;
-  console.log(totalQuantity);
-  totalPrice = 0;
-
-  for (let i = 0; i < itemQuantity.length; i++) {
-    totalPrice += (itemQuantity[i].valueAsNumber * cartItem[i].price);
-  }
-  let productTotalPrice = document.getElementById('totalPrice');
-  productTotalPrice.innerHTML = totalPrice;
-  console.log(totalPrice);
+ 
 }
 getPrices();
-
-
+ 
+ 
 //------- Suppression d'un article du panier --------------
-
+ 
 function deleteArticle() {
   // Sélection du bouton supprimer l'article
   const deleteItem = document.getElementsByClassName("deleteItem");
   console.log(deleteItem);
-
+ 
   // Fonction de suppression d'un article du panier
   for (let l = 0; l < deleteItem.length; l++) {
     deleteItem[l].addEventListener("click", (event) => {
       event.preventDefault();
       // Sélection de l'article à supprimer
-      let selectDelete = cartItem[l].element.dataset.id;
-      console.log(selectDelete);
+      let selectId = cartItem[l].element.dataset._id;
+      let selectColor = cartItem[l].element.dataset.color;
+      console.log(selectColor);
       // Méthode filter pour sélectionner les éléments à garder et supprimer l'élément sélectionné
-      cartItem = cartItem.filter(element => element.id !== selectDelete);
-
+      cartItem = cartItem.filter(element => element._id !== selectId);
+ 
       localStorage.setItem("cart", JSON.stringify(cartItem));
-
+ 
       // Alerte de suppression du produit
       alert("Ce produit a été supprimé de votre panier");
       window.location.href = "cart.html";
     })
   }
 }
-deleteArticle();
+deleteArticle();*/
+
+//------------- Formulaire de commande
+
+// Sélection bouton envoi du formulaire
+const orderButton = document.querySelector("#order");
+console.log(orderButton);
+
+// Add event listener
+orderButton.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  const formValues = {
+    prenom: document.querySelector("#firstName").value,
+    nom: document.querySelector("#lastName").value,
+    adresse: document.querySelector("#address").value,
+    ville: document.querySelector("#city").value,
+    email: document.querySelector("#email").value,
+  }
+  console.log("formValues", formValues);
+
+  //-------------- Gestion de validation du formulaire
+  const leprenom = formValues.prenom;
+  console.log(leprenom);
 
 
-//--------- Total du panier -----------
+
+  // Mettre l'objet dans le local storage
+  localStorage.setItem("formValues", JSON.stringify(formValues));
+
+  // Mettre les valeurs du formulaire et les produits du panier dans un objet à envoyer vers le serveur
+  const toSend = {
+    cartItem,
+    formValues
+  }
+  console.log("Envoyer", toSend);
+});
+
+// Récupération des valeurs du formulaire depuis local storage
+const dataUser = localStorage.getItem("formValues");
+const dataUserObject = JSON.parse(dataUser);
+
+
+// Mettre les valeurs du local storage dans le champ du formulaire
+document.querySelector("#firstName").value = dataUserObject.prenom;
+document.querySelector("#lastName").value = dataUserObject.nom;
+document.querySelector("#address").value = dataUserObject.adresse;
+document.querySelector("#city").value = dataUserObject.ville;
+document.querySelector("#email").value = dataUserObject.email;
+
+console.log("dataUserObject", dataUserObject);

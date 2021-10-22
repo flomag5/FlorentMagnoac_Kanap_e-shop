@@ -80,8 +80,8 @@ function getCart() {
     }
     return items;
 }
-//--- JSON.parse pour convertir les données au format JSON 
-//qui sont dans le local storage en objet JavaScript ---
+/*--- JSON.parse pour convertir les données au format JSON 
+----- qui sont dans le local storage en objet JavaScript ---*/
 
 
 // Choix de la quantité dans une fonction
@@ -108,6 +108,7 @@ const confirmationWindow = () => {
 // Fonction d'ajout au panier selon les options avec regroupement des items
 function itemInCart(productId, color, quantity) {
     if (quantity == 0) {
+        window.alert("Veuillez choisir une couleur et quantité pour votre canapé, merci.");
         return;
     }
     let items = getCart();

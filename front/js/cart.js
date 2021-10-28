@@ -22,6 +22,7 @@ if (cartItem === null || cartItem == 0) {
         console.log(data);
         console.log(items);
         positionItems.innerHTML += displayItem(data, items.color, items.quantity);
+        displayTotalPrice(data.price * items.quantity);
       })
   }
 };
@@ -29,13 +30,6 @@ if (cartItem === null || cartItem == 0) {
 // Fonction affichage des informations de chaque produit dans le panier
 function displayItem(data, color, quantity) {
   let price = data.price * quantity;
-
-  // Calcul prix total du panier
-  let prices = [];
-  prices.push(price);
-  let totalPrice = prices.reduce((acc, el) => acc + el);
-  document.querySelector("#totalPrice").innerHTML += totalPrice;
-
   return `
          <article class="cart__item" data-id="${data._Id}" data-color="${color}">
                  <div class="cart__item__img">
@@ -53,7 +47,7 @@ function displayItem(data, color, quantity) {
                        <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value=${quantity}>
                      </div>
                      <div class="cart__item__content__settings__delete">
-                       <p class="deleteItem">Supprimer</p>
+                       <p class="deleteItem" data-id="${data._Id}">Supprimer</p>
                      </div>
                    </div>
                  </div>
@@ -62,18 +56,14 @@ function displayItem(data, color, quantity) {
 }
 
 
-// Déclaration de la variable de calcul du nombre d'articles dans le panier
-/*let arrayPrices = [];
-for (let items of cartItem) {
-  let ItemPrice = items.price;
-  console.log(items.price)
-  arrayPrices.push(ItemPrice);
-}
-console.log(arrayPrices);
+//--------- EVENEMENTS -------------------------
 
-const reduces = (previousValue, currentValue) => previousValue + currentValue;
-let totalPriceCart = arrayPrices.reduce(reduces);
-document.querySelector("#totalPrice").innerHTML = totalPriceCart;*/
+// Calcul prix total du panier
+function displayTotalPrice(price) {
+  let divTotalPrice = document.querySelector("#totalPrice");
+  console.log(parseFloat(divTotalPrice.textContent));
+  divTotalPrice.textContent = parseFloat(divTotalPrice.textContent) + price;
+};
 
 
 let arrayQuantities = [];
@@ -98,32 +88,24 @@ document.querySelector("#totalQuantity").innerHTML = totalQuantityCart;
 
 
 //------- Suppression d'un article du panier --------------
+let deleteBtn = document.querySelectorAll(".deleteItem");
+console.log(deleteBtn);
+for (l = 0; l < deleteBtn.length; l++) {
+  deleteBtn[l].addEventListener("click", (event) => {
+    event.preventDefault();
+    console.log(event.target);
+    let selectIdItem = cartItem[l].productId;
+    console.log(selectIdItem);
+    let selectColorItem = cartItem[l].color;
+    console.log(selectColorItem);
 
-function deleteItem() {
-  // Sélection du bouton supprimer l'article
-  const deleteItem = document.querySelectorAll(".deleteItem");
-  console.log(deleteItem);
+    cartItem = cartItem.filter(el => el.productId !== selectIdItem);
+    console.log(cartItem);
 
-  // Fonction de suppression d'un article du panier
-  for (let l = 0; l < deleteItem.length; l++) {
-    deleteItem[l].addEventListener("click", (event) => {
-      event.preventDefault();
-      // Sélection de l'article à supprimer
-      let selectId = this.dataset.id;
-      let selectColor = this.dataset.color;
-      console.log(selectColor);
-      console.log(selectId);
-      // Méthode filter pour sélectionner les éléments à garder et supprimer l'élément sélectionné
-      cartItem = cartItem.filter(element => element.id !== selectId || element.dataset.color !== selectColor);
-
-      localStorage.setItem("cart", JSON.stringify(cartItem));
-
-      // Alerte de suppression du produit
-      alert("Ce produit a été supprimé de votre panier");
-      location.reload();
-    });
-  }
+    localStorage.setItem("cart", JSON.stringify)
+  })
 }
+
 
 
 //------------- Formulaire de commande -------------------------------

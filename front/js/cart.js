@@ -31,28 +31,27 @@ if (cartItem === null || cartItem == 0) {
 function displayItem(data, color, quantity) {
   let price = data.price * quantity;
   return `
-         <article class="cart__item" data-id="${data._Id}" data-color="${color}">
-                 <div class="cart__item__img">
-                   <img src=${data.imageUrl} alt="${data.altTxt}">
-                 </div>
-                 <div class="cart__item__content">
-                   <div class="cart__item__content__titlePrice">
-                     <h2>${data.name}</h2>
-                     <p>${color}</p>
-                     <p id="price">${price}.00 €</p>
-                   </div>
-                   <div class="cart__item__content__settings">
-                     <div class="cart__item__content__settings__quantity">
-                       <p>Qté : </p>
-                       <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value=${quantity}>
-                     </div>
-                     <div class="cart__item__content__settings__delete">
-                       <p class="deleteItem" data-id="${data._Id}">Supprimer</p>
-                     </div>
-                   </div>
-                 </div>
-               </article>`;
-
+          <article class="cart__item" data-id="${data._Id}" data-color="${color}">
+                  <div class="cart__item__img">
+                    <img src=${data.imageUrl} alt="${data.altTxt}">
+                  </div>
+                  <div class="cart__item__content">
+                    <div class="cart__item__content__titlePrice">
+                      <h2>${data.name}</h2>
+                      <p>${color}</p>
+                      <p id="price">${price}.00 €</p>
+                    </div>
+                    <div class="cart__item__content__settings">
+                      <div class="cart__item__content__settings__quantity">
+                        <p>Qté : </p>
+                        <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value=${quantity}>
+                      </div>
+                      <div class="cart__item__content__settings__delete">
+                        <p class="deleteItem" data-id="${data._Id}">Supprimer</p>
+                      </div>
+                    </div>
+                  </div>
+                </article>`;
 }
 
 

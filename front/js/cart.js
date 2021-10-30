@@ -12,7 +12,8 @@ if (cartItem === null || cartItem == 0) {
   emptyCart.innerHTML = "Votre panier est actuellement vide.";
   console.log(emptyCart);
 
-  // Si le panier n'est pas vide, affichage des produits
+
+  // Si le panier n'est pas vide, affichage des items
 } else {
   for (i = 0; i < cartItem.length; i++) {
     let items = cartItem[i];
@@ -21,38 +22,13 @@ if (cartItem === null || cartItem == 0) {
       .then((data) => {
         console.log(data);
         console.log(items);
-        positionItems.innerHTML += displayItem(data, items.color, items.quantity);
+        positionItems.appendChild(displayItem(data, items.color, items.quantity));
         displayTotalPrice(data.price * items.quantity);
+        changeQuantity();
+        deleteProduct();
       })
   }
 };
-
-// Fonction affichage des informations de chaque produit dans le panier
-function displayItem(data, color, quantity) {
-  let price = data.price * quantity;
-  return `
-          <article class="cart__item" data-id="${data._Id}" data-color="${color}">
-                  <div class="cart__item__img">
-                    <img src=${data.imageUrl} alt="${data.altTxt}">
-                  </div>
-                  <div class="cart__item__content">
-                    <div class="cart__item__content__titlePrice">
-                      <h2>${data.name}</h2>
-                      <p>${color}</p>
-                      <p id="price">${price}.00 €</p>
-                    </div>
-                    <div class="cart__item__content__settings">
-                      <div class="cart__item__content__settings__quantity">
-                        <p>Qté : </p>
-                        <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value=${quantity}>
-                      </div>
-                      <div class="cart__item__content__settings__delete">
-                        <p class="deleteItem" data-id="${data._Id}">Supprimer</p>
-                      </div>
-                    </div>
-                  </div>
-                </article>`;
-}
 
 
 //--------- EVENEMENTS -------------------------
@@ -64,49 +40,74 @@ function displayTotalPrice(price) {
   divTotalPrice.textContent = parseFloat(divTotalPrice.textContent) + price;
 };
 
-
+// Calcul du nombre d'articles dans le panier
 let arrayQuantities = [];
-for (let items of cartItem) {
-  let ItemQuantity = items.quantity;
+if (cartItem === null || cartItem == 0) {
+  console.log("Panier vide");
+} else {
+  for (let items of cartItem) {
+    let ItemQuantity = items.quantity;
+    arrayQuantities.push(ItemQuantity);
+  }
+  console.log(arrayQuantities);
 
-  arrayQuantities.push(ItemQuantity);
+  const reducer = (previousValue, currentValue) => previousValue + currentValue;
+  let totalQuantityCart = arrayQuantities.reduce(reducer);
+  document.querySelector("#totalQuantity").innerHTML = totalQuantityCart;
 }
-console.log(arrayQuantities);
-
-const reducer = (previousValue, currentValue) => previousValue + currentValue;
-let totalQuantityCart = arrayQuantities.reduce(reducer);
-document.querySelector("#totalQuantity").innerHTML = totalQuantityCart;
-
-
-//------- Fin affichage produits panier -------------
-
-
-// Modification d'une quantité de produit
-
-
 
 
 //------- Suppression d'un article du panier --------------
-let deleteBtn = document.querySelectorAll(".deleteItem");
-console.log(deleteBtn);
-for (l = 0; l < deleteBtn.length; l++) {
-  deleteBtn[l].addEventListener("click", (event) => {
-    event.preventDefault();
-    console.log(event.target);
-    let selectIdItem = cartItem[l].productId;
-    console.log(selectIdItem);
-    let selectColorItem = cartItem[l].color;
-    console.log(selectColorItem);
 
-    cartItem = cartItem.filter(el => el.productId !== selectIdItem);
-    console.log(cartItem);
+function deleteProduct() {
+  let deleteBtn = document.querySelectorAll(".deleteItem");
 
-    localStorage.setItem("cart", JSON.stringify)
-  })
+  for (let k = 0; k < deleteBtn.length; k++) {
+    deleteBtn[k].addEventListener("click", (event) => {
+      event.preventDefault();
+
+      let selectProd = deleteBtn[k].closest("article");
+      let selectIdItem = selectProd.dataset.id;
+      console.log(selectIdItem);
+      let selectColorItem = selectProd.dataset.color;;
+      console.log(selectColorItem);
+
+      cartItem = cartItem.filter(el => el.productId !== selectIdItem || el.color !== selectColorItem);
+      console.log(cartItem);
+
+      localStorage.setItem("cart", JSON.stringify(cartItem));
+
+      alert("Le produit a bien été supprimé de votre panier");
+      location.reload();
+    })
+  }
 }
 
+//-------------- Modification de la quantité d'un article
 
+function changeQuantity() {
+  let qttModif = document.querySelectorAll(".itemQuantity");
 
+  for (let l = 0; l < qttModif.length; l++) {
+    qttModif[l].addEventListener("change", (event) => {
+      event.preventDefault();
+
+      //Selection de l'element à modifier en fonction de son id ET sa couleur
+      let quantityModif = cartItem[l].quantity;
+      let qttModifValue = qttModif[l].valueAsNumber;
+
+      const resultFind = cartItem.find((el) => el.qttModifValue !== quantityModif);
+
+      resultFind.quantity = qttModifValue;
+      cartItem[l].quantity = resultFind.quantity;
+
+      localStorage.setItem("cart", JSON.stringify(cartItem));
+
+      // refresh rapide
+      location.reload();
+    })
+  }
+}
 //------------- Formulaire de commande -------------------------------
 
 // Sélection bouton envoi du formulaire
@@ -128,9 +129,14 @@ orderButton.addEventListener("click", (e) => {
       //this.input = document.querySelector(`#${input}`).value;
     }
   }
-  // Appel de l'instance de classe formulaire pour créer l'objet formValues
-  const formValues = new Formulaire();
+  // Appel de l'instance de classe formulaire pour créer l'objet contact
+  const contact = new Formulaire();
 
+  let idProducts = [];
+  for (let i = 0; i < cartItem.length; i++) {
+    idProducts.push(cartItem[i].productId);
+  }
+  console.log(idProducts);
 
   //-------------- Gestion de validation du formulaire --------
 
@@ -148,7 +154,7 @@ orderButton.addEventListener("click", (e) => {
   }
 
   function firstNameCheck() {
-    const lePrenom = formValues.prenom;
+    const lePrenom = contact.prenom;
     if (regExNameCity(lePrenom)) {
       firstNameErrorMsg.innerHTML = " ";
       return true;
@@ -159,7 +165,7 @@ orderButton.addEventListener("click", (e) => {
   }
 
   function lastNameCheck() {
-    const leNom = formValues.nom;
+    const leNom = contact.nom;
     if (regExNameCity(leNom)) {
       lastNameErrorMsg.innerHTML = " ";
       return true;
@@ -170,7 +176,7 @@ orderButton.addEventListener("click", (e) => {
   }
 
   function addressCheck() {
-    const leAddress = formValues.adresse;
+    const leAddress = contact.adresse;
     if (regExAddress(leAddress)) {
       addressErrorMsg.innerHTML = " ";
       return true;
@@ -181,7 +187,7 @@ orderButton.addEventListener("click", (e) => {
   }
 
   function cityCheck() {
-    const laVille = formValues.ville;
+    const laVille = contact.ville;
     if (regExNameCity(laVille)) {
       cityErrorMsg.innerHTML = " ";
       return true;
@@ -192,7 +198,7 @@ orderButton.addEventListener("click", (e) => {
   }
 
   function eMailCheck() {
-    const leMail = formValues.email;
+    const leMail = contact.email;
     if (regExEmail(leMail)) {
       console.log("ok");
       emailErrorMsg.innerHTML = " ";
@@ -209,36 +215,33 @@ orderButton.addEventListener("click", (e) => {
   // Contrôle validité du formulaire avant envoi dans local storage
   if (firstNameCheck() && lastNameCheck() && addressCheck() && cityCheck() && eMailCheck()) {
     // Mettre l'objet dans le local storage
-    localStorage.setItem("formValues", JSON.stringify(formValues));
+    localStorage.setItem("contact", JSON.stringify(contact));
   } else {
     console.log("Veuillez remplir les champs du formulaire");
   }
 
   // Mettre les valeurs du formulaire et les produits du panier dans un objet à envoyer vers le serveur
   const order = {
-    cartItem,
-    formValues
+    contact: {
+      firstName: document.querySelector("#firstName").value,
+      lastName: document.querySelector("#lastName").value,
+      address: document.querySelector("#address").value,
+      city: document.querySelector("#city").value,
+      email: document.querySelector("#email").value,
+    },
+    products: idProducts,
   }
   console.log("Envoyer", order);
 
-  /**Expect request to contain:
-   * contact: {
-   * firstName:
-   * lastName:
-   * address:
-   * city:
-   * email:
-   * }
-   * products: [strings] -> products id
-   */
-  const promise = fetch("http://jsonplaceholder.typicode.com/users", {
+
+  const promise = fetch("http://localhost:3000/api/products/order", {
     method: "POST",
     body: JSON.stringify(order),
     headers: {
       'Accept': "application/json",
       "Content-type": "application/json",
     },
-  });
+  })
   console.log("PRM", promise);
 
   // Pour visualiser résultat du serveur dans la console
@@ -267,7 +270,7 @@ orderButton.addEventListener("click", (e) => {
 
 
 // Récupération des valeurs du formulaire depuis local storage
-const dataUser = localStorage.getItem("formValues");
+const dataUser = localStorage.getItem("contact");
 const dataUserObject = JSON.parse(dataUser);
 
 function fillInputData(input) {

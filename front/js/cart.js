@@ -132,27 +132,31 @@ orderButton.addEventListener("click", (e) => {
   // Appel de l'instance de classe formulaire pour créer l'objet contact
   const contact = new Formulaire();
 
+  // Construction d'un array of strings depuis local storage
   let idProducts = [];
   for (let i = 0; i < cartItem.length; i++) {
     idProducts.push(cartItem[i].productId);
   }
   console.log(idProducts);
 
-  //-------------- Gestion de validation du formulaire --------
+  //-------------- Gestion de validation du formulaire -----------------//
 
   // Fonction de contrôle des saisies selon regEx
+  // Controle prenom/nom/ville
   const regExNameCity = (value) => {
     return /^[A-Za-z ,.'-]{3,20}$/.test(value)
   }
-
+  // Controle de l'adresse
   const regExAddress = (value) => {
     return /^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+/.test(value)
   }
-
+  // Controle de l'email
   const regExEmail = (value) => {
     return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value)
   }
 
+
+  //-------- Fonctions de saisie des champs du formulaire 
   function firstNameCheck() {
     const lePrenom = contact.prenom;
     if (regExNameCity(lePrenom)) {
@@ -216,24 +220,30 @@ orderButton.addEventListener("click", (e) => {
   if (firstNameCheck() && lastNameCheck() && addressCheck() && cityCheck() && eMailCheck()) {
     // Mettre l'objet dans le local storage
     localStorage.setItem("contact", JSON.stringify(contact));
+    // Mettre les valeurs du formulaire et les produits du panier dans un objet à envoyer vers le serveur
+    const order = {
+      contact: {
+        firstName: document.querySelector("#firstName").value,
+        lastName: document.querySelector("#lastName").value,
+        address: document.querySelector("#address").value,
+        city: document.querySelector("#city").value,
+        email: document.querySelector("#email").value,
+      },
+      products: idProducts,
+    }
+    console.log("Envoyer", order);
+
+    sendToServer(order);
   } else {
-    console.log("Veuillez remplir les champs du formulaire");
-  }
+    //alert("Veuillez remplir les champs du formulaire");
+    return false;
+  };
 
-  // Mettre les valeurs du formulaire et les produits du panier dans un objet à envoyer vers le serveur
-  const order = {
-    contact: {
-      firstName: document.querySelector("#firstName").value,
-      lastName: document.querySelector("#lastName").value,
-      address: document.querySelector("#address").value,
-      city: document.querySelector("#city").value,
-      email: document.querySelector("#email").value,
-    },
-    products: idProducts,
-  }
-  console.log("Envoyer", order);
+});
 
 
+function sendToServer(order) {
+  // Fonction d'envoi des éléments de la commande panier + formulaire
   const promise = fetch("http://localhost:3000/api/products/order", {
     method: "POST",
     body: JSON.stringify(order),
@@ -246,28 +256,18 @@ orderButton.addEventListener("click", (e) => {
 
   // Pour visualiser résultat du serveur dans la console
   promise.then(async (response) => {
+    // Si la promesse n'est pas résolu alors gestion des erreurs
     try {
       console.log("RESP", response);
-      const contenu = await response.json();
-      console.log("CONTENT", contenu);
+      const content = await response.json();
+      console.log("CONTENT", content);
+
     } catch (e) {
       console.log(e);
+      alert(`Erreur de ${e}`);
     }
-  })
-
-  // Pour voir ce qu'il y a réellement sur le serveur
-  /*const newPromise = fetch("http://localhost:3000/api/products/order")
-  newPromise.then(async (response) => {
-    try {
-      console.log("RESULT", newPromise);
-      const dataBack = await response.json()
-      console.log("DATA", dataBack);
-    } catch (e) {
-      console.log(e);
-    }
-  })*/
-});
-
+  });
+}
 
 // Récupération des valeurs du formulaire depuis local storage
 const dataUser = localStorage.getItem("contact");
@@ -275,16 +275,23 @@ const dataUserObject = JSON.parse(dataUser);
 
 function fillInputData(input) {
   if (dataUserObject == null) {
-    console.log("local storage a pour valeur null");
+    console.log("Le local storage a pour valeur null");
   } else {
     document.querySelector(`#${input}`).value = dataUserObject[input];
   }
 }
+
 // Mettre les valeurs du local storage dans le champ du formulaire
-document.querySelector("#firstName").value = dataUserObject.prenom;
-document.querySelector("#lastName").value = dataUserObject.nom;
-document.querySelector("#address").value = dataUserObject.adresse;
-document.querySelector("#city").value = dataUserObject.ville;
-document.querySelector("#email").value = dataUserObject.email;
+if (dataUser == null) {
+  console.log("Formulaire non renseigné");
+} else {
+  document.querySelector("#firstName").value = dataUserObject.prenom;
+  document.querySelector("#lastName").value = dataUserObject.nom;
+  document.querySelector("#address").value = dataUserObject.adresse;
+  document.querySelector("#city").value = dataUserObject.ville;
+  document.querySelector("#email").value = dataUserObject.email;
+}
+
+
 
 

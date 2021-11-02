@@ -2,8 +2,7 @@
 
 function displayItem(data, color, quantity) {
 
-    //modifyQtt();
-    //deleteProduct();
+
     // Création de l'élément "article" contenant le data-id
     let productArticle = document.createElement("article");
     document.querySelector("#cart__items").appendChild(productArticle);

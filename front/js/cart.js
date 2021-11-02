@@ -252,7 +252,7 @@ function sendToServer(order) {
       "Content-type": "application/json",
     },
   })
-  console.log("PRM", promise);
+  console.log("PROMISE", promise);
 
   // Pour visualiser résultat du serveur dans la console
   promise.then(async (response) => {
@@ -261,6 +261,20 @@ function sendToServer(order) {
       console.log("RESP", response);
       const content = await response.json();
       console.log("CONTENT", content);
+
+      if (response.ok) {
+        console.log(`Résultat de ${response.ok}`);
+        console.log("ID RESP", content.orderId);
+
+        // Récupération de l'Id de la commande pprovenant de response du serveur
+        localStorage.setItem("responseID", content.orderId);
+
+        // Redirection vers la page de confirmation
+        window.location = "confirmation.html";
+
+      } else {
+        alert(`Erreur de serveur: ${response.status}`);
+      };
 
     } catch (e) {
       console.log(e);

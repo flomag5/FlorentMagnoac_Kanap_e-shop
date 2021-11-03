@@ -1,7 +1,12 @@
-//--------- Fonction affichage des informations de chaque produit dans le panier --------------
+/**
+ * Affichage dans le DOM des produits du panier
+ * @param { String } data (récupération des informations des articles)
+ * @param { String } color (choix de la couleur)
+ * @param { number } quantity (nombre du même article)
+ * @return { Promise } productArticle
+ */
 
 function displayItem(data, color, quantity) {
-
 
     // Création de l'élément "article" contenant le data-id
     let productArticle = document.createElement("article");

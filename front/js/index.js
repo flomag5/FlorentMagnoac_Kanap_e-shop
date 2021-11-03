@@ -1,5 +1,4 @@
 // Requête de récupération des produits depuis l'API
-
 fetch("http://localhost:3000/api/products")
     .then(function (res) {
         if (res.ok) {
@@ -9,7 +8,6 @@ fetch("http://localhost:3000/api/products")
 
     /* Récupération de la réponse émise
     ---Fonction qui va afficher les objets dans le DOM automatiquement --- */
-
     .then(function (items) {
         console.log(items);
 
@@ -20,7 +18,7 @@ fetch("http://localhost:3000/api/products")
         }
     })
     .catch(function (err) {
-        console.log("Fetch Failed")
+        console.log("Fetch Failed", err);
         let items = document.querySelector("#items");
         items.innertHTML = "Affichage momentanément indisponible. Veuillez revenir plus tard.";
     });

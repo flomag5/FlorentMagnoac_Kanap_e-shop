@@ -2,10 +2,10 @@
 const queryString_url_id = window.location.search;
 console.log(queryString_url_id);
 
-//Méthode extraction de l'Id
+//Méthode extraction de l'Id par un constructeur
 const urlSearchParams = new URLSearchParams(queryString_url_id);
 console.log(urlSearchParams);
-
+// Récupération de l'id de l'item dans l'URL
 const idItems = urlSearchParams.get("id");
 console.log(idItems);
 
@@ -105,7 +105,13 @@ const confirmationWindow = () => {
     }
 }
 
-// Fonction d'ajout au panier selon les options avec regroupement des items
+/**
+ * Fonction d'ajout au panier selon les options avec regroupement des items
+ * @param { String } productId (id du produit choisi)
+ * @param { String } color (option couleur choisie)
+ * @param { number } quantity (nombre d'article du même id et color)
+ * @return { Promise } 
+ */
 function itemInCart(productId, color, quantity) {
     if (quantity == 0) {
         window.alert("Veuillez choisir une couleur et quantité pour votre canapé, merci.");

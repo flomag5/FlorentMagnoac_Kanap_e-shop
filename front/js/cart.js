@@ -1,4 +1,4 @@
-// Déclaration d'un item dans le storage
+// Déclaration d'un item dans le local storage
 let cartItem = JSON.parse(localStorage.getItem("cart"));
 console.log(cartItem);
 
@@ -9,14 +9,16 @@ const positionItems = document.querySelector("#cart__items");
 // Si le panier est vide : afficher le panier vide
 if (cartItem === null || cartItem == 0) {
   const emptyCart = document.querySelector("#cart__items");
-  emptyCart.innerHTML = "Votre panier est actuellement vide.";
+  emptyCart.innerText = "Votre panier est actuellement vide.";
   console.log(emptyCart);
-
+  // Cacher le formulaire de saisie infos utilisateur
+  document.querySelector(".cart__order").style.display = "none";
 
   // Si le panier n'est pas vide, affichage des items
 } else {
   for (i = 0; i < cartItem.length; i++) {
     let items = cartItem[i];
+    // Appel à API et récupération de l'élément d'index cible dans la boucle
     fetch("http://localhost:3000/api/products/" + cartItem[i].productId)
       .then((response) => response.json())
       .then((data) => {
@@ -33,15 +35,18 @@ if (cartItem === null || cartItem == 0) {
 
 //--------- EVENEMENTS -------------------------
 
-// Calcul prix total du panier
+/**
+ * Calcul du prix total du panier
+ * @param { number } price 
+ */
 function displayTotalPrice(price) {
   let divTotalPrice = document.querySelector("#totalPrice");
-  console.log(parseFloat(divTotalPrice.textContent));
+  //console.log(parseFloat(divTotalPrice.textContent));
   divTotalPrice.textContent = parseFloat(divTotalPrice.textContent) + price;
 };
 
-// Calcul du nombre d'articles dans le panier
 
+// Calcul du nombre d'articles dans le panier
 let arrayQuantities = [];
 if (cartItem === null || cartItem == 0) {
   console.log("Panier vide");
@@ -66,13 +71,13 @@ function deleteProduct() {
   for (let k = 0; k < deleteBtn.length; k++) {
     deleteBtn[k].addEventListener("click", (event) => {
       event.preventDefault();
-
+      // Méthode pour cibler l'id et couleur du produit 
       let selectProd = deleteBtn[k].closest("article");
       let selectIdItem = selectProd.dataset.id;
       console.log(selectIdItem);
-      let selectColorItem = selectProd.dataset.color;;
+      let selectColorItem = selectProd.dataset.color;
       console.log(selectColorItem);
-
+      // Méthode renvoie nouveau tableau contenant les éléments qui respectent la condition du filtre
       cartItem = cartItem.filter(el => el.productId !== selectIdItem || el.color !== selectColorItem);
       console.log(cartItem);
 
@@ -84,50 +89,28 @@ function deleteProduct() {
   }
 }
 
+
 //-------------- Modification de la quantité d'un article
-
-/*function changeQuantity() {
-  let changeItemQty = document.querySelectorAll(".itemQuantity");
-
-  for (let l = 0; l < changeItemQty.length; l++) {
-    changeItemQty[l].addEventListener("change", (event) => {
-      event.preventDefault();
-
-      //Selection de l'element à modifier en fonction de son id ET sa couleur
-      let quantityChange = cartItem[l].quantity;
-      let changeItemQtyValue = changeItemQty[l].valueAsNumber;
-
-      const resultFind = cartItem.find((el) => el.changeItemQtyValue !== quantityChange);
-
-      resultFind.quantity = changeItemQtyValue;
-      cartItem[l].quantity = resultFind.quantity;
-
-      localStorage.setItem("cart", JSON.stringify(cartItem));
-
-      // refresh rapide
-      location.reload();
-    })
-  };
-}*/
-
 
 function changeQuantity() {
   // sélection des inputs
-  let itemQuantity = document.querySelectorAll('.itemQuantity');
+  let itemQuantity = document.querySelectorAll(".itemQuantity");
   for (let k = 0; k < itemQuantity.length; k++) {
     // console.log(itemQuantity[k].value);
-    itemQuantity[k].addEventListener('change', () => {
-
+    // Evènement de modification pour observer changement de quantité
+    itemQuantity[k].addEventListener("change", (e) => {
+      e.preventDefault();
       cartItem[k].quantity = itemQuantity[k].value;
-      localStorage.setItem('cart', JSON.stringify(cartItem));
+      localStorage.setItem("cart", JSON.stringify(cartItem));
 
 
-      // ajouter fonction prix total 
+      // Ajout de la fonction prix total 
       displayTotalPrice();
       location.reload();
     })
   }
 }
+
 
 //------------- Formulaire de commande -------------------------------
 

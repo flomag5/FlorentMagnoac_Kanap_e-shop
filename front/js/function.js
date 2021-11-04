@@ -3,7 +3,7 @@
  * @param { String } data (récupération des informations des articles)
  * @param { String } color (choix de la couleur)
  * @param { number } quantity (nombre du même article)
- * @return { Promise } productArticle
+ * @return { Promise } productArticle (produit à insérer dans le DOM)
  */
 
 function displayItem(data, color, quantity) {
@@ -78,8 +78,6 @@ function displayItem(data, color, quantity) {
     productQuantity.setAttribute("min", "1");
     productQuantity.setAttribute("max", "100");
     productQuantity.setAttribute("name", "itemQuantity");
-
-
 
     // Création d'une "div" pour la possibilité de suppression
     let productItemContentSettingsDelete = document.createElement("div");

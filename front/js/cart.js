@@ -37,7 +37,8 @@ if (cartItem === null || cartItem == 0) {
 
 /**
  * Calcul du prix total du panier
- * @param { number } price 
+ * @param { number } price
+ * @return (renvoie un nombre) 
  */
 function displayTotalPrice(price) {
   let divTotalPrice = document.querySelector("#totalPrice");
@@ -92,7 +93,7 @@ function deleteProduct() {
 
 //-------------- Modification de la quantité d'un article
 
-function changeQuantity(e) {
+/*function changeQuantity(e) {
   // sélection des inputs
   let itemQuantity = document.querySelectorAll(".itemQuantity");
   for (let k = 0; k < itemQuantity.length; k++) {
@@ -109,10 +110,35 @@ function changeQuantity(e) {
       location.reload();
     })
   }
+}*/
+
+function changeQuantity() {
+  // Sélection des inputs à écouter
+  let itemQuantity = document.querySelectorAll(".itemQuantity");
+  // Méthode pour cibler id et couleur du produit
+  itemQuantity.forEach((itemQty) => {
+    let articleQty = itemQty.closest("article");
+    let articleQtyId = articleQty.dataset.id;
+    console.log(articleQtyId);
+    let articleQtyColor = articleQty.dataset.color;
+    console.log(articleQtyColor);
+    // Evènement de modification pour écouter changement de quantité
+    itemQty.addEventListener("change", () => {
+      let newQantity = Number(itemQty.value);
+      // Fonction callback pour chaque élément du panier
+      // au change on incrémente la quantité de l'élément de ces id&&couleur
+      cartItem.forEach((element) => {
+        if (element.productId == articleQtyId && element.color == articleQtyColor) {
+          element.quantity = newQantity;
+        }
+      });
+      localStorage.setItem("cart", JSON.stringify(cartItem));
+      window.location.reload();
+    });
+  });
 }
 
-
-//------------- Formulaire de commande -------------------------------
+//------------- Formulaire de commande -------------------------------//
 
 // Sélection bouton envoi du formulaire
 const orderButton = document.querySelector("#order");

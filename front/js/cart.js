@@ -92,20 +92,20 @@ function deleteProduct() {
 
 //-------------- Modification de la quantité d'un article
 
-function changeQuantity() {
+function changeQuantity(e) {
   // sélection des inputs
   let itemQuantity = document.querySelectorAll(".itemQuantity");
   for (let k = 0; k < itemQuantity.length; k++) {
     // console.log(itemQuantity[k].value);
     // Evènement de modification pour observer changement de quantité
     itemQuantity[k].addEventListener("change", (e) => {
+      console.log(e);
       e.preventDefault();
       cartItem[k].quantity = itemQuantity[k].value;
       localStorage.setItem("cart", JSON.stringify(cartItem));
 
 
       // Ajout de la fonction prix total 
-      displayTotalPrice();
       location.reload();
     })
   }

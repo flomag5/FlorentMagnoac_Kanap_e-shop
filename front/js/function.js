@@ -78,7 +78,8 @@ function displayItem(data, color, quantity) {
     productQuantity.setAttribute("min", "1");
     productQuantity.setAttribute("max", "100");
     productQuantity.setAttribute("name", "itemQuantity");
-    console.log(productQuantity.value);
+
+
 
     // Création d'une "div" pour la possibilité de suppression
     let productItemContentSettingsDelete = document.createElement("div");

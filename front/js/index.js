@@ -1,4 +1,6 @@
-// Requête de récupération des produits depuis l'API
+//---------- Importation et affichage des articles -------------------//
+
+// Requête GET de récupération des produits depuis l'API
 fetch("http://localhost:3000/api/products")
     .then(function (res) {
         if (res.ok) {
@@ -7,7 +9,7 @@ fetch("http://localhost:3000/api/products")
     })
 
     /* Récupération de la réponse émise
-    ---Fonction qui va afficher les objets dans le DOM automatiquement --- */
+    Fonction qui va afficher les objets dans le DOM automatiquement */
     .then(function (items) {
         console.log(items);
 
@@ -17,6 +19,7 @@ fetch("http://localhost:3000/api/products")
             console.log(article);
         }
     })
+    //Intercepte la promesse rejetée et affiche message d'erreur
     .catch(function (err) {
         console.log("Fetch Failed", err);
         let items = document.querySelector("#items");
@@ -24,8 +27,8 @@ fetch("http://localhost:3000/api/products")
     });
 
 
-/* Fonction informations de chaque produit
-    --- Créer les éléments html et mettre les données à l'intérieur --- */
+/* --- Fonction des informations de chaque produit
+Créer les éléments html et mettre les données à l'intérieur --- */
 
 function displayProduct(article) {
     /* Paramétrage de l'attribut 'href' de la balise 'a' 

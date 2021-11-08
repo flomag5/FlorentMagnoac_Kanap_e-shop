@@ -1,21 +1,22 @@
+//---------------- Gestion de l'affichage du produit -------------------//
+
 // Récupération de la chaine de requête dans l'URL
 const queryString_url_id = window.location.search;
 console.log(queryString_url_id);
 
-//Méthode extraction de l'Id par un constructeur
+// Méthode extraction de l'Id par un constructeur
 const urlSearchParams = new URLSearchParams(queryString_url_id);
 console.log(urlSearchParams);
 // Récupération de l'id de l'item dans l'URL
 const idItems = urlSearchParams.get("id");
 console.log(idItems);
 
-//Positionnement de l'objet dans le DOM
+// Positionnement de l'objet dans le DOM
 const positionElement = document.querySelector(".item");
 console.log(positionElement);
 
 
 // Récupération d'un article de l'API avec son Id
-
 fetch("http://localhost:3000/api/products/" + idItems)
     .then(function (res) {
         return res.json();
@@ -26,6 +27,8 @@ fetch("http://localhost:3000/api/products/" + idItems)
         displayProduct(article);
 
     })
+
+    // Fonction affichage d'erreur si rejet de la promise
     .catch((error) => {
         console.log(error, "Fetch failed");
         let items = document.querySelector(".item");
@@ -65,14 +68,14 @@ function displayProduct(article) {
 }
 
 
-//----------- Gestion du panier ------------------
+//------------------------- Gestion du panier --------------------------------//
 
 
 // Sélection du bouton pour ajouter au panier
 const addToCart = document.getElementById("addToCart");
 console.log(addToCart);
 
-// Fonction de récupération d'un article déclaré dans le storage
+// Fonction de récupération d'un article déclaré dans le local storage
 function getCart() {
     let items = [];
     if (localStorage.getItem("cart") != null) {
@@ -110,10 +113,9 @@ const confirmationWindow = () => {
  * @param { String } productId (id du produit choisi)
  * @param { String } color (option couleur choisie)
  * @param { number } quantity (nombre d'article du même id et color)
- * @return { Promise } 
  */
 function itemInCart(productId, color, quantity) {
-    if (quantity == 0) {
+    if (quantity == 0 || color == 0) {
         window.alert("Veuillez choisir une couleur et quantité pour votre canapé, merci.");
         return;
     }
@@ -125,6 +127,8 @@ function itemInCart(productId, color, quantity) {
     } else {
         let found = false;
         for (let i = 0; i < items.length; i++) {
+            /* Si item avec le même id/couleur déjà présent dans le local storage
+        on incrémente juste la quantité */
             if (productId === items[i].productId && color === items[i].color) {
                 found = true;
                 items[i].quantity += quantity;
@@ -135,7 +139,7 @@ function itemInCart(productId, color, quantity) {
             let item = {
                 "productId": productId, "color": color, "quantity": quantity
             };
-            // Ajout dans le tableau de l'objet avec les options choisies
+            // Méthode d'ajout dans le tableau de l'objet avec les options choisies
             items.push(item);
             confirmationWindow();
         }
@@ -147,7 +151,7 @@ function itemInCart(productId, color, quantity) {
 
 // Ecouter le bouton et envoie dans le panier des options choisies
 addToCart.addEventListener("click", () => {
-    let quantity = parseInt(quantityValue());
+    let quantity = parseInt(quantityValue());  //Convertit la chaîne de caractères et renvoit un entier
     let color = colorValue();
     itemInCart(idItems, color, quantity);
 });

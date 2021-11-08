@@ -1,4 +1,6 @@
-// Déclaration d'un item dans le local storage
+//----------------- Récupération du panier -----------------------//
+
+// Déclaration des items contenus dans le local storage
 let cartItem = JSON.parse(localStorage.getItem("cart"));
 console.log(cartItem);
 
@@ -33,12 +35,12 @@ if (cartItem === null || cartItem == 0) {
 };
 
 
-//--------- EVENEMENTS -------------------------
+//--------- Evènements sur les éléments du panier -----------------//
 
 /**
  * Calcul du prix total du panier
  * @param { number } price
- * @return (renvoie un nombre) 
+ * Affiche le résultat de la conversion en nombre  
  */
 function displayTotalPrice(price) {
   let divTotalPrice = document.querySelector("#totalPrice");
@@ -57,16 +59,17 @@ if (cartItem === null || cartItem == 0) {
     arrayQuantities.push(ItemQuantity);
   }
   console.log(arrayQuantities);
-
+  // Méthode d'application de fonction d'accumulateur
   const reducer = (previousValue, currentValue) => previousValue + currentValue;
   let totalQuantityCart = arrayQuantities.reduce(reducer);
   document.querySelector("#totalQuantity").innerHTML = totalQuantityCart;
 }
 
 
-//------- Suppression d'un article du panier --------------
+// Suppression d'un article du panier
 
 function deleteProduct() {
+  // Sélection des boutons de suppression à écouter
   let deleteBtn = document.querySelectorAll(".deleteItem");
 
   for (let k = 0; k < deleteBtn.length; k++) {
@@ -81,7 +84,7 @@ function deleteProduct() {
       // Méthode renvoie nouveau tableau contenant les éléments qui respectent la condition du filtre
       cartItem = cartItem.filter(el => el.productId !== selectIdItem || el.color !== selectColorItem);
       console.log(cartItem);
-
+      // Renvoi du nouveau panier dans le local storage
       localStorage.setItem("cart", JSON.stringify(cartItem));
 
       //alert("Le produit a bien été supprimé de votre panier");
@@ -91,26 +94,7 @@ function deleteProduct() {
 }
 
 
-//-------------- Modification de la quantité d'un article
-
-/*function changeQuantity(e) {
-  // sélection des inputs
-  let itemQuantity = document.querySelectorAll(".itemQuantity");
-  for (let k = 0; k < itemQuantity.length; k++) {
-    // console.log(itemQuantity[k].value);
-    // Evènement de modification pour observer changement de quantité
-    itemQuantity[k].addEventListener("change", (e) => {
-      console.log(e);
-      e.preventDefault();
-      cartItem[k].quantity = itemQuantity[k].value;
-      localStorage.setItem("cart", JSON.stringify(cartItem));
-
-
-      // Ajout de la fonction prix total 
-      location.reload();
-    })
-  }
-}*/
+// Modification de la quantité d'un article
 
 function changeQuantity() {
   // Sélection des inputs à écouter
@@ -125,20 +109,22 @@ function changeQuantity() {
     // Evènement de modification pour écouter changement de quantité
     itemQty.addEventListener("change", () => {
       let newQantity = Number(itemQty.value);
-      // Fonction callback pour chaque élément du panier
-      // au change on incrémente la quantité de l'élément de ces id&&couleur
+      /* Fonction callback pour chaque élément du panier
+      --- au change on incrémente la quantité de l'élément de ces id&&couleur */
       cartItem.forEach((element) => {
         if (element.productId == articleQtyId && element.color == articleQtyColor) {
           element.quantity = newQantity;
         }
       });
+      // Renvoi du nouveau panier dans le local storage
       localStorage.setItem("cart", JSON.stringify(cartItem));
       window.location.reload();
     });
   });
 }
 
-//------------- Formulaire de commande -------------------------------//
+
+//----------------- Formulaire de commande -------------------------------//
 
 // Sélection bouton envoi du formulaire
 const orderButton = document.querySelector("#order");
@@ -148,7 +134,8 @@ orderButton.addEventListener("click", (e) => {
   e.preventDefault();
 
 
-  // Création d'une classe pour fabrique l'objet dans lequel iront les valeurs du formulaire
+  /* Création d'une classe pour fabriquer l'objet 
+  dans lequel iront les valeurs du formulaire */
   class Formulaire {
     constructor() {
       this.prenom = document.querySelector("#firstName").value;
@@ -162,6 +149,7 @@ orderButton.addEventListener("click", (e) => {
   // Appel de l'instance de classe formulaire pour créer l'objet contact
   const contact = new Formulaire();
 
+
   // Construction d'un array of strings depuis local storage
   let idProducts = [];
   for (let i = 0; i < cartItem.length; i++) {
@@ -169,9 +157,11 @@ orderButton.addEventListener("click", (e) => {
   }
   console.log(idProducts);
 
-  //-------------- Gestion de validation du formulaire -----------------//
+
+  //-------- Gestion de validation du formulaire 
 
   // Fonction de contrôle des saisies selon regEx
+
   // Controle prenom/nom/ville
   const regExNameCity = (value) => {
     return /^[A-Za-z ,.'-]{3,20}$/.test(value)
@@ -273,7 +263,7 @@ orderButton.addEventListener("click", (e) => {
 
 
 function sendToServer(order) {
-  // Fonction d'envoi des éléments de la commande panier + formulaire
+  // Fonction d'envoi des éléments de la commande avec la méthode POST
   const promise = fetch("http://localhost:3000/api/products/order", {
     method: "POST",
     body: JSON.stringify(order),
@@ -284,7 +274,7 @@ function sendToServer(order) {
   })
   console.log("PROMISE", promise);
 
-  // Pour visualiser résultat du serveur dans la console
+  // Pour visualiser le résultat du serveur dans la console
   promise.then(async (response) => {
     // Si la promesse n'est pas résolu alors gestion des erreurs
     try {

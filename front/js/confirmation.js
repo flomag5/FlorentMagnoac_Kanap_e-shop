@@ -1,6 +1,6 @@
-//--------Affichage de l'id de la commande -----------------
+//--------Affichage de l'id de la commande -----------------//
 
-// Récupération de l'url de la page de la commande
+// Récupération de l'url de la page de confirmation
 const confirmationPage = window.location.href;
 const orderConfirm = new URL(confirmationPage);
 

@@ -87,7 +87,7 @@ function deleteProduct() {
       // Renvoi du nouveau panier dans le local storage
       localStorage.setItem("cart", JSON.stringify(cartItem));
 
-      //alert("Le produit a bien été supprimé de votre panier");
+      alert("Le produit a bien été supprimé de votre panier");
       location.reload();
     })
   }
@@ -255,16 +255,15 @@ orderButton.addEventListener("click", (e) => {
 
     sendToServer(order);
   } else {
-    //alert("Veuillez remplir les champs du formulaire");
     return false;
   };
-
 });
 
 
+/* Fonction d'envoi de la commande avec la méthode POST
+requête JSON contenant l'objet de contact et tableau de produit (order) */
 function sendToServer(order) {
-  // Fonction d'envoi des éléments de la commande avec la méthode POST
-  const promise = fetch("http://localhost:3000/api/products/order", {
+  fetch("http://localhost:3000/api/products/order", {
     method: "POST",
     body: JSON.stringify(order),
     headers: {
@@ -272,37 +271,23 @@ function sendToServer(order) {
       "Content-type": "application/json",
     },
   })
-  console.log("PROMISE", promise);
-
-  // Pour visualiser le résultat du serveur dans la console
-  promise.then(async (response) => {
-    // Si la promesse n'est pas résolu alors gestion des erreurs
-    try {
-      console.log("RESP", response);
-      const content = await response.json();
+    .then(function (res) {
+      if (res.ok) {
+        return res.json();
+      }
+    })
+    // Récupération de la réponse émise
+    .then(function (content) {
       console.log("CONTENT", content);
-
-      if (response.ok) {
-        console.log(`Résultat de ${response.ok}`);
-        console.log("ID RESP", content.orderId);
-
-        // Récupération de l'Id de la commande pprovenant de response du serveur
-        localStorage.setItem("responseID", content.orderId);
-
-        // Redirection vers la page de confirmation
-        window.location = "confirmation.html?id=" + content.orderId;
-
-      } else {
-        alert(`Erreur de serveur: ${response.status}`);
-      };
-
-    } catch (e) {
-      console.log(e);
-      alert(`Erreur de ${e}`);
-    }
-  });
+      // Redirection vers la page de confirmation + id de commande en paramètre URL
+      window.location = "confirmation.html?id=" + content.orderId;
+    })
+    .catch(function (error) {
+      alert(`Erreur de ${error}`);
+    });
 }
 
+/*
 // Récupération des valeurs du formulaire depuis local storage
 const dataUser = localStorage.getItem("contact");
 const dataUserObject = JSON.parse(dataUser);
@@ -325,6 +310,6 @@ if (dataUser == null) {
   document.querySelector("#city").value = dataUserObject.ville;
   document.querySelector("#email").value = dataUserObject.email;
 }
-
+*/
 
 

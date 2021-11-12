@@ -162,17 +162,17 @@ orderButton.addEventListener("click", (e) => {
 
   // Fonction de contrôle des saisies selon regEx
 
-  // Controle prenom/nom/ville
+  // Masque de recherche pour prenom/nom/ville
   const regExNameCity = (value) => {
-    return /^[A-Za-z ,.'-]{3,20}$/.test(value)
+    return /^[A-Za-zÀ-ÿ ,.'-]{3,20}$/.test(value)
   }
-  // Controle de l'adresse
+  // Motif de recherche pour l'adresse
   const regExAddress = (value) => {
-    return /^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+/.test(value)
+    return /^[0-9]{1,4}[,. ][a-zA-ZÀ-ÿ,-]{1,}[ ].{1,}$/.test(value)
   }
-  // Controle de l'email
+  // Masque de recherche de l'email
   const regExEmail = (value) => {
-    return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value)
+    return /^[a-zA-Z0-9.-_]+@{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$/.test(value)
   }
 
 

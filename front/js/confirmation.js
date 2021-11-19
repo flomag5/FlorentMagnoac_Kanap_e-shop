@@ -11,5 +11,4 @@ document.querySelector("#orderId").innerText = getResponseId;
 
 // Vidage des données du local storage
 localStorage.removeItem("cart");
-localStorage.removeItem("contact");
-localStorage.removeItem("responseID");
+

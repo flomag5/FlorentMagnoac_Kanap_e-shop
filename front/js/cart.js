@@ -135,7 +135,7 @@ orderButton.addEventListener("click", (e) => {
 
 
   /* Création d'une classe pour fabriquer l'objet 
-  dans lequel iront les valeurs du formulaire */
+  dans lequel iront les valeurs du formulaire à contrôler */
   class Formulaire {
     constructor() {
       this.prenom = document.querySelector("#firstName").value;
@@ -143,7 +143,6 @@ orderButton.addEventListener("click", (e) => {
       this.adresse = document.querySelector("#address").value;
       this.ville = document.querySelector("#city").value;
       this.email = document.querySelector("#email").value;
-      //this.input = document.querySelector(`#${input}`).value;
     }
   }
   // Appel de l'instance de classe formulaire pour créer l'objet contact
@@ -168,7 +167,7 @@ orderButton.addEventListener("click", (e) => {
   }
   // Motif de recherche pour l'adresse
   const regExAddress = (value) => {
-    return /^[0-9]{1,4}[,. ][a-zA-ZÀ-ÿ,-]{1,}[ ].{1,}$/.test(value)
+    return /^([a-zA-ZÀ-ÿ,-. ]{1,}|[0-9]{1,4})[ ].{1,}$/.test(value)
   }
   // Masque de recherche de l'email
   const regExEmail = (value) => {
@@ -183,7 +182,7 @@ orderButton.addEventListener("click", (e) => {
       firstNameErrorMsg.innerHTML = " ";
       return true;
     } else {
-      firstNameErrorMsg.innerHTML = "Veuillez renseigner ce champ";
+      firstNameErrorMsg.innerHTML = "Veuillez saisir uniquement des caractères, minimum de 3";
       return false;
     };
   }
@@ -194,7 +193,7 @@ orderButton.addEventListener("click", (e) => {
       lastNameErrorMsg.innerHTML = " ";
       return true;
     } else {
-      lastNameErrorMsg.innerHTML = "Veuillez renseigner ce champ";
+      lastNameErrorMsg.innerHTML = "Veuillez saisir uniquement des caractères, minimum de 3";
       return false;
     };
   }
@@ -205,7 +204,7 @@ orderButton.addEventListener("click", (e) => {
       addressErrorMsg.innerHTML = " ";
       return true;
     } else {
-      addressErrorMsg.innerHTML = "Veuillez saisir une adresse valide";
+      addressErrorMsg.innerHTML = "Veuillez renseigner une adresse valide";
       return false;
     };
   }
@@ -230,7 +229,7 @@ orderButton.addEventListener("click", (e) => {
 
     } else {
       console.log("ko");
-      emailErrorMsg.innerHTML = "Adresse email n'est pas valide";
+      emailErrorMsg.innerHTML = "Adresse email non valide";
       return false;
     };
   }
@@ -239,7 +238,7 @@ orderButton.addEventListener("click", (e) => {
   // Contrôle validité du formulaire avant envoi dans local storage
   if (firstNameCheck() && lastNameCheck() && addressCheck() && cityCheck() && eMailCheck()) {
     // Mettre l'objet dans le local storage
-    localStorage.setItem("contact", JSON.stringify(contact));
+    //localStorage.setItem("contact", JSON.stringify(contact));
     // Mettre les valeurs du formulaire et les produits du panier dans un objet à envoyer vers le serveur
     const order = {
       contact: {
@@ -286,30 +285,4 @@ function sendToServer(order) {
       alert(`Erreur de ${error}`);
     });
 }
-
-/*
-// Récupération des valeurs du formulaire depuis local storage
-const dataUser = localStorage.getItem("contact");
-const dataUserObject = JSON.parse(dataUser);
-
-function fillInputData(input) {
-  if (dataUserObject == null) {
-    console.log("Le local storage a pour valeur null");
-  } else {
-    document.querySelector(`#${input}`).value = dataUserObject[input];
-  }
-}
-
-// Mettre les valeurs du local storage dans le champ du formulaire
-if (dataUser == null) {
-  console.log("Formulaire non renseigné");
-} else {
-  document.querySelector("#firstName").value = dataUserObject.prenom;
-  document.querySelector("#lastName").value = dataUserObject.nom;
-  document.querySelector("#address").value = dataUserObject.adresse;
-  document.querySelector("#city").value = dataUserObject.ville;
-  document.querySelector("#email").value = dataUserObject.email;
-}
-*/
-
 

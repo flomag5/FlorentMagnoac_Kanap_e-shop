@@ -87,7 +87,6 @@ function deleteProduct() {
       // Renvoi du nouveau panier dans le local storage
       localStorage.setItem("cart", JSON.stringify(cartItem));
 
-      alert("Le produit a bien été supprimé de votre panier");
       location.reload();
     })
   }
@@ -182,7 +181,7 @@ orderButton.addEventListener("click", (e) => {
       firstNameErrorMsg.innerHTML = " ";
       return true;
     } else {
-      firstNameErrorMsg.innerHTML = "Veuillez saisir uniquement des caractères, minimum de 3";
+      firstNameErrorMsg.innerHTML = "Veuillez saisir uniquement des lettres avec/sans accent, minimum de 3";
       return false;
     };
   }
@@ -193,7 +192,7 @@ orderButton.addEventListener("click", (e) => {
       lastNameErrorMsg.innerHTML = " ";
       return true;
     } else {
-      lastNameErrorMsg.innerHTML = "Veuillez saisir uniquement des caractères, minimum de 3";
+      lastNameErrorMsg.innerHTML = "Veuillez saisir uniquement des lettres avec/sans accent, minimum de 3";
       return false;
     };
   }

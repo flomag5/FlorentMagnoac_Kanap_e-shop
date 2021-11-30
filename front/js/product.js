@@ -49,6 +49,10 @@ function displayProduct(article) {
     let productName = document.getElementById('title');
     productName.innerHTML = article.name;
 
+    // Affichage du nom dans l'onglet de la page
+    let productsName = document.getElementById('titles');
+    productsName.innerHTML = article.name;
+
     // Affiche le prix de l'article choisi
     let productPrice = document.getElementById('price');
     productPrice.innerHTML = article.price;

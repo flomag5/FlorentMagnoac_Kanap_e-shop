@@ -103,6 +103,8 @@ function colorValue() {
     return color.value;
 }
 
+
+
 //Fenêtre de confirmation des options sélectionnées
 const confirmationWindow = () => {
     if (window.confirm(`Votre choix de couleur: ${colorValue()} et de quantité: ${quantityValue()} a bien été ajouté à votre panier. \n Consultez le panier OK, revenir à l'accueil Annuler`)) {
@@ -119,8 +121,9 @@ const confirmationWindow = () => {
  * @param { number } quantity (nombre d'article du même id et color)
  */
 function itemInCart(productId, color, quantity) {
-    if (quantity == 0 || color == 0) {
-        window.alert("Veuillez choisir une couleur et quantité pour votre canapé, merci.");
+    //if (quantity == 0 || color == 0) {
+    if ((color == 0) || ((quantity == null) || (quantity < 1) || (quantity > 100))) {
+        window.alert("Veuillez choisir une couleur et une quantité comprise entre min:1 et max:100 pour votre canapé, merci.");
         return;
     }
     let items = getCart();
